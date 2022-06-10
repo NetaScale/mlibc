@@ -4,7 +4,7 @@
 #define CHAR_BIT 8
 
 #ifdef LONG_MAX
-# ifdef LONG_MAX == INT32_MAX
+# if LONG_MAX == INT32_MAX
 #  define LONG_BIT 32
 # else
 // Safe assumption
@@ -17,6 +17,7 @@
 // Safe assumption
 #  define LONG_BIT 64
 # endif
+# define LONG_MAX __LONG_MAX__
 #else
 # error "Unsupported configuration, please define either LONG_MAX or __LONG_MAX__"
 #endif

@@ -11,6 +11,14 @@
 #include <mlibc/debug.hpp>
 #include <bits/ensure.h>
 
+/* TODO: !!! deal with gcc's odd limits.h - need to compile with --with-headers */
+#if INTPTR_MAX == INT64_MAX
+# define SSIZE_MAX LONG_MAX
+#elif INTPTR_MAX == INT32_MAX
+# define SSIZE_MAX INT_MAX
+#endif
+/* end */
+
 ssize_t readv(int, const struct iovec *, int) {
 	__ensure(!"Not implemented");
 	__builtin_unreachable();

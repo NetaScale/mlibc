@@ -260,7 +260,8 @@ __MLIBC_CHECK_TYPE(__mlibc_uint64, __UINT_LEAST64_TYPE__);
 
 // Fast-width.
 // Unfortunately, GCC and Clang disagree about fast types.
-#ifndef __clang__
+#if 0 // FIXME: was `#ifndef __clang__` but x86_64-pc-elf-gcc seems to define
+	// __INT_FAST32_TYPE__ as unsigned int
 	__MLIBC_CHECK_TYPE(__mlibc_int_fast8,  __INT_FAST8_TYPE__);
 	__MLIBC_CHECK_TYPE(__mlibc_int_fast16, __INT_FAST16_TYPE__);
 	__MLIBC_CHECK_TYPE(__mlibc_int_fast32, __INT_FAST32_TYPE__);
