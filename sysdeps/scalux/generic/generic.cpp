@@ -28,8 +28,7 @@ sys_libc_panic()
 int
 sys_tcb_set(void *pointer)
 {
-	mlibc::infoLogger() << "mlibc: sys_tcb_set is a stub" << frg::endlog;
-	return ENOTSUP;
+	return syscall1(kPXSysSetFSBase, (uintptr_t)pointer);
 }
 
 int
@@ -66,8 +65,13 @@ sys_clock_get(int clock, time_t *secs, long *nanos)
 int
 sys_open(const char *path, int flags, int *fd)
 {
-	mlibc::infoLogger() << "mlibc: sys_open is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t ret, err;
+	ret = syscall2(kPXSysOpen, (uintptr_t)path, (uintptr_t)flags, &err);
+	if (ret != -1ul) {
+		*fd = ret;
+		return 0;
+	} else
+		return -err;
 }
 
 int
@@ -80,8 +84,13 @@ sys_close(int fd)
 int
 sys_read(int fd, void *buf, size_t count, ssize_t *bytes_read)
 {
-	mlibc::infoLogger() << "mlibc: sys_read is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t ret, err;
+	ret = syscall3(kPXSysRead, fd, (uintptr_t)buf, (uintptr_t)count, &err);
+	if (ret != -1ul) {
+		*bytes_read = ret;
+		return 0;
+	} else
+		return -err;
 }
 
 #ifndef MLIBC_BUILDING_RTDL
@@ -96,8 +105,13 @@ sys_write(int fd, const void *buf, size_t count, ssize_t *bytes_written)
 int
 sys_seek(int fd, off_t offset, int whence, off_t *new_offset)
 {
-	mlibc::infoLogger() << "mlibc: sys_seek is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t ret, err;
+	ret = syscall3(kPXSysSeek, fd, offset, whence, &err);
+	if (ret != -1ul) {
+		*new_offset = ret;
+		return 0;
+	} else
+		return -err;
 }
 
 int
@@ -106,7 +120,8 @@ sys_vm_map(void *hint, size_t size, int prot, int flags, int fd, off_t offset,
 {
 	void *addr = hint;
 	uintptr_t err;
-	addr = (void*)syscall6(kPXSysMmap, (uintptr_t)addr, size, prot, flags, fd, offset, &err);
+	addr = (void *)syscall6(kPXSysMmap, (uintptr_t)addr, size, prot, flags,
+	    fd, offset, &err);
 	if (err == 0)
 		*window = addr;
 	return err;
