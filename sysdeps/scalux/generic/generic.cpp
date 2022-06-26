@@ -15,7 +15,7 @@ namespace mlibc {
 void
 sys_libc_log(const char *message)
 {
-	syscall1(kPXSysDebug, (uintptr_t)message);
+	syscall1(kPXSysDebug, (uintptr_t)message, NULL);
 }
 
 void
@@ -28,7 +28,7 @@ sys_libc_panic()
 int
 sys_tcb_set(void *pointer)
 {
-	return syscall1(kPXSysSetFSBase, (uintptr_t)pointer);
+	return syscall1(kPXSysSetFSBase, (uintptr_t)pointer, NULL);
 }
 
 int
@@ -49,7 +49,7 @@ sys_anon_free(void *pointer, size_t size)
 void
 sys_exit(int status)
 {
-	mlibc::infoLogger() << "mlibc: sys_exit is a stub" << frg::endlog;
+	syscall1(kPXSysExit, status, NULL);
 }
 #endif
 
@@ -77,8 +77,9 @@ sys_open(const char *path, int flags, int *fd)
 int
 sys_close(int fd)
 {
-	mlibc::infoLogger() << "mlibc: sys_close is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t err;
+	syscall1(kPXSysClose, fd, &err);
+	return err;
 }
 
 int

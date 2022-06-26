@@ -6,18 +6,24 @@ typedef unsigned int speed_t;
 typedef unsigned int tcflag_t;
 
 // indices for the c_cc array in struct termios
-#define NCCS    11
-#define VEOF     0
-#define VEOL     1
+#define NCCS     32
+#define VINTR    0
+#define VQUIT    1
 #define VERASE   2
-#define VINTR    3
-#define VKILL    4
-#define VMIN     5
-#define VQUIT    6
-#define VSTART   7
-#define VSTOP    8
-#define VSUSP    9
-#define VTIME   10
+#define VKILL    3
+#define VEOF     4
+#define VTIME    5
+#define VMIN     6
+#define VSWTC    7
+#define VSTART   8
+#define VSTOP    9
+#define VSUSP    10
+#define VEOL     11
+#define VREPRINT 12
+#define VDISCARD 13
+#define VWERASE  14
+#define VLNEXT   15
+#define VEOL2    16
 
 struct termios {
 	tcflag_t c_iflag;
