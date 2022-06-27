@@ -10,6 +10,8 @@
 #include "../../kernel/posix/sys.h"
 #include "abi-bits/errno.h"
 
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 namespace mlibc {
 
 void
@@ -106,6 +108,15 @@ sys_write(int fd, const void *buf, size_t count, ssize_t *bytes_written)
 	} else
 		return -err;
 }
+
+int
+sys_ioctl(int fd, unsigned long request, void *arg, int *result)
+{
+	mlibc::infoLogger()
+	    << "mlibc: " << __func__ << " is a stub! "
+	    << "fd " << fd << "request " << request << frg::endlog;
+	return ENOSYS;
+}
 #endif
 
 int
@@ -117,18 +128,38 @@ sys_seek(int fd, off_t offset, int whence, off_t *new_offset)
 		*new_offset = ret;
 		return 0;
 	} else
-		return -err;
+		return err;
 }
 
-int sys_isatty(int fd) {
-    uintptr_t ret, err;
+int
+sys_isatty(int fd)
+{
+	uintptr_t ret, err;
 
-   ret = syscall1(kPXSysIsATTY, fd, &err);
+	ret = syscall1(kPXSysIsATTY, fd, &err);
 
-    if (ret == 1)
-        return 0;
-    else
-        return err;
+	if (ret == 1)
+		return 0;
+	else if (ret == -1)
+		return err;
+}
+
+int
+sys_pselect(int num_fds, fd_set *read_set, fd_set *write_set,
+    fd_set *except_set, const struct timespec *timeout, const sigset_t *sigmask,
+    int *num_events)
+{
+	uintptr_t ret, err;
+
+	ret = syscall6(kPXSysPSelect, num_fds, (uintptr_t)read_set,
+	    (uintptr_t)write_set, (uintptr_t)except_set, (uintptr_t)timeout,
+	    (uintptr_t)sigmask, &err);
+
+	if (ret == -1ul)
+		return err;
+
+	*num_events = ret;
+	return 0;
 }
 
 int
@@ -218,6 +249,53 @@ sys_getppid()
 	mlibc::infoLogger() << "mlibc: sys_getppid is a stub" << frg::endlog;
 	return ppid;
 }
+
+pid_t
+sys_getpgid(pid_t pid, pid_t *pgid)
+{
+	mlibc::infoLogger() << "mlibc: sys_getpgid is a stub" << frg::endlog;
+	*pgid = 0;
+	return 0;
+}
+
+uid_t
+sys_getuid()
+{
+	return 0;
+}
+
+gid_t
+sys_getgid()
+{
+	return 0;
+}
+
+uid_t
+sys_geteuid()
+{
+	return 0;
+}
+
+gid_t
+sys_getegid()
+{
+	return 0;
+}
+
+/*
+int
+sys_sigprocmask(int how, const sigset_t *set, sigset_t *retrieve)
+{
+	return ENOTSUP;
+}
+
+int
+sys_sigaction(int number, const struct sigaction *__restrict action,
+    struct sigaction *__restrict saved_action)
+{
+	return ENOTSUP;
+}
+*/
 
 #endif // MLIBC_BUILDING_RTDL
 
