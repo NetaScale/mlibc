@@ -98,8 +98,13 @@ sys_read(int fd, void *buf, size_t count, ssize_t *bytes_read)
 int
 sys_write(int fd, const void *buf, size_t count, ssize_t *bytes_written)
 {
-	mlibc::infoLogger() << "mlibc: sys_write is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t ret, err;
+	ret = syscall3(kPXSysWrite, fd, (uintptr_t)buf, (uintptr_t)count, &err);
+	if (ret != -1ul) {
+		*bytes_written = ret;
+		return 0;
+	} else
+		return -err;
 }
 #endif
 
@@ -113,6 +118,17 @@ sys_seek(int fd, off_t offset, int whence, off_t *new_offset)
 		return 0;
 	} else
 		return -err;
+}
+
+int sys_isatty(int fd) {
+    uintptr_t ret, err;
+
+   ret = syscall1(kPXSysIsATTY, fd, &err);
+
+    if (ret == 1)
+        return 0;
+    else
+        return err;
 }
 
 int

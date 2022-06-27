@@ -12,9 +12,9 @@
 
 uintptr_t libraryBase = 0x41000000;
 
-bool verbose = false;
-bool stillSlightlyVerbose = false;
-bool logBaseAddresses = false;
+bool verbose = true;
+bool stillSlightlyVerbose = true;
+bool logBaseAddresses = true;
 bool eagerBinding = true;
 
 #if defined(__x86_64__)

@@ -34,6 +34,7 @@ if not no_headers
 		'include/abi-bits/uid_t.h',
 		'include/abi-bits/wait.h',
 		'include/abi-bits/limits.h',
+		'include/abi-bits/time.h',
 		subdir: 'abi-bits'
 	)
 endif
@@ -48,4 +49,3 @@ if not headers_only
 		install_dir: get_option('libdir')
 	)
 endif
-
