@@ -1,1 +1,1 @@
-../../../../abis/mlibc/signal.h
+../../../../abis/scalux/signal.h

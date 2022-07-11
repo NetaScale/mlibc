@@ -7,7 +7,7 @@
 #include <mlibc/debug.hpp>
 #include <mlibc/thread-entry.hpp>
 
-#include "../../kernel/posix/sys.h"
+#include "../../Kernel/posix/sys.h"
 #include "abi-bits/errno.h"
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
