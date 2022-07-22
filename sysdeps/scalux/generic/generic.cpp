@@ -166,7 +166,7 @@ int
 sys_vm_map(void *hint, size_t size, int prot, int flags, int fd, off_t offset,
     void **window)
 {
-	void *addr = hint;
+	void     *addr = hint;
 	uintptr_t err;
 	addr = (void *)syscall6(kPXSysMmap, (uintptr_t)addr, size, prot, flags,
 	    fd, offset, &err);
@@ -224,8 +224,11 @@ sys_sleep(time_t *secs, long *nanos)
 int
 sys_fork(pid_t *child)
 {
-	mlibc::infoLogger() << "mlibc: sys_fork is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t err, pid;
+	pid = syscall0(kPXSysFork, &err);
+	if (err == 0)
+		*child = pid;
+	return err;
 }
 
 int
