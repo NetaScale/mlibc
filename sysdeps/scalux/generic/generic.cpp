@@ -25,6 +25,8 @@ sys_libc_panic()
 {
 	mlibc::infoLogger() << "\e[31mmlibc: panic!" << frg::endlog;
 	asm volatile("syscall" : : "a"(12), "D"(1) : "rcx", "r11", "rdx");
+	for (;;)
+		;
 }
 
 int
@@ -140,8 +142,11 @@ sys_isatty(int fd)
 
 	if (ret == 1)
 		return 0;
-	else if (ret == -1)
+	else if (ret == -1ul)
 		return err;
+
+	__ensure(!"Not reached");
+	return -1;
 }
 
 int
@@ -168,10 +173,12 @@ sys_vm_map(void *hint, size_t size, int prot, int flags, int fd, off_t offset,
 {
 	void     *addr = hint;
 	uintptr_t err;
+
 	addr = (void *)syscall6(kPXSysMmap, (uintptr_t)addr, size, prot, flags,
 	    fd, offset, &err);
 	if (err == 0)
 		*window = addr;
+
 	return err;
 }
 
@@ -216,7 +223,7 @@ sys_thread_exit()
 int
 sys_sleep(time_t *secs, long *nanos)
 {
-	long ms = (*nanos / 1000000) + (*secs * 1000);
+	// long ms = (*nanos / 1000000) + (*secs * 1000);
 	mlibc::infoLogger() << "mlibc: sys_sleep is a stub" << frg::endlog;
 	return ENOTSUP;
 }
@@ -225,9 +232,11 @@ int
 sys_fork(pid_t *child)
 {
 	uintptr_t err, pid;
+
 	pid = syscall0(kPXSysFork, &err);
 	if (err == 0)
 		*child = pid;
+
 	return err;
 }
 
@@ -299,6 +308,20 @@ sys_sigaction(int number, const struct sigaction *__restrict action,
 	return ENOTSUP;
 }
 */
+
+int
+sys_waitpid(pid_t pid, int *status, int flags, pid_t *ret_pid)
+{
+	uintptr_t ret, err;
+
+	ret = syscall3(kPXSysWaitPID, pid, (uintptr_t)status, flags, &err);
+
+	if (ret == -1ul)
+		return err;
+
+	*ret_pid = ret;
+	return 0;
+}
 
 #endif // MLIBC_BUILDING_RTDL
 
