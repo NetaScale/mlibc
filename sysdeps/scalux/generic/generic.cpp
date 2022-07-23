@@ -243,8 +243,12 @@ sys_fork(pid_t *child)
 int
 sys_execve(const char *path, char *const argv[], char *const envp[])
 {
-	mlibc::infoLogger() << "mlibc: sys_execve is a stub" << frg::endlog;
-	return ENOTSUP;
+	uintptr_t err;
+
+	__ensure(syscall3(kPXSysExecVE, (uintptr_t)path, (uintptr_t)argv,
+		     (uintptr_t)envp, &err) == -1ul);
+
+	return err;
 }
 
 pid_t
