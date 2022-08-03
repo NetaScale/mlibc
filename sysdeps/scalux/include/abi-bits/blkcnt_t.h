@@ -1,1 +1,1 @@
-../../../../abis/mlibc/blkcnt_t.h
+../../../../abis/scalux/blkcnt_t.h

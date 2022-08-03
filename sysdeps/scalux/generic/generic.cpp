@@ -46,7 +46,8 @@ int
 sys_anon_free(void *pointer, size_t size)
 {
 	mlibc::infoLogger() << "mlibc: sys_anon_free is a stub" << frg::endlog;
-	return ENOTSUP;
+	// return ENOTSUP;
+	return 0;
 }
 
 #ifndef MLIBC_BUILDING_RTDL
@@ -61,7 +62,8 @@ sys_exit(int status)
 int
 sys_clock_get(int clock, time_t *secs, long *nanos)
 {
-	mlibc::infoLogger() << "mlibc: sys_clock_get is a stub" << frg::endlog;
+	// mlibc::infoLogger() << "mlibc: sys_clock_get is a stub" <<
+	// frg::endlog;
 	return 0;
 }
 #endif
@@ -147,6 +149,48 @@ sys_isatty(int fd)
 
 	__ensure(!"Not reached");
 	return -1;
+}
+
+int
+sys_open_dir(const char *path, int *fd)
+{
+	return sys_open(path, O_DIRECTORY, fd);
+}
+
+int
+sys_read_entries(int fd, void *buffer, size_t max_size, size_t *bytes_read)
+{
+	uintptr_t ret, err;
+
+	ret = syscall4(kPXSysReadDir, fd, (uintptr_t)buffer, max_size,
+	    (uintptr_t)bytes_read, &err);
+
+	if (ret == -1ul)
+		return err;
+
+	return 0;
+}
+
+int
+sys_stat(fsfd_target fsfdt, int fd, const char *path, int flags,
+    struct stat *statbuf)
+{
+	uintptr_t ret, err;
+
+	if (fsfdt == fsfd_target::path)
+		fd = AT_FDCWD;
+	else if (fsfdt == fsfd_target::fd)
+		flags |= AT_EMPTY_PATH;
+	else
+		__ensure(fsfdt == fsfd_target::fd_path);
+
+	ret = syscall4(kPXSysStat, fd, (uintptr_t)path, flags,
+	    (uintptr_t)statbuf, &err);
+
+	if (ret == -1ul)
+		return err;
+
+	return 0;
 }
 
 int

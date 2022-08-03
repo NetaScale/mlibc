@@ -1,1 +1,1 @@
-../../../../abis/mlibc/blksize_t.h
+../../../../abis/scalux/blksize_t.h
