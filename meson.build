@@ -128,10 +128,12 @@ elif host_machine.system() == 'dripos'
 	libc_include_dirs += include_directories('sysdeps/dripos/include')
 	subdir('sysdeps/dripos')
 elif host_machine.system() == 'scalux'
-	disable_linux_option = true
-	disable_linux_headers = true
+	#disable_linux_option = true
+	#disable_linux_headers = true
 	rtdl_include_dirs += include_directories('sysdeps/scalux/include')
 	libc_include_dirs += include_directories('sysdeps/scalux/include')
+	internal_conf.set('MLIBC_MAP_DSO_SEGMENTS', true)
+	internal_conf.set('MLIBC_MAP_FILE_WINDOWS', true)
 	subdir('sysdeps/scalux')
 else
 	error('No sysdeps defined for OS: ' + host_machine.system())

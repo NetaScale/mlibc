@@ -77,7 +77,7 @@ sys_open(const char *path, int flags, int *fd)
 		*fd = ret;
 		return 0;
 	} else
-		return -err;
+		return err;
 }
 
 int
@@ -368,6 +368,16 @@ sys_waitpid(pid_t pid, int *status, int flags, pid_t *ret_pid)
 		return err;
 
 	*ret_pid = ret;
+	return 0;
+}
+
+int
+sys_gethostname(char *buffer, size_t bufsize)
+{
+	char name[] = "scal_ux";
+	if (bufsize < sizeof(name))
+		return ENAMETOOLONG;
+	strcpy(buffer, name);
 	return 0;
 }
 
