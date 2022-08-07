@@ -135,6 +135,11 @@ elif host_machine.system() == 'dripos'
 	rtdl_include_dirs += include_directories('sysdeps/dripos/include')
 	libc_include_dirs += include_directories('sysdeps/dripos/include')
 	subdir('sysdeps/dripos')
+elif host_machine.system() == 'scalux'
+	# disable_linux_option = true
+	rtdl_include_dirs += include_directories('sysdeps/scalux/include')
+	libc_include_dirs += include_directories('sysdeps/scalux/include')
+	subdir('sysdeps/scalux')
 else
 	error('No sysdeps defined for OS: ' + host_machine.system())
 endif
